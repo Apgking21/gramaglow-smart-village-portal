@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-font="medium" data-contrast="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GramaGlow Static Phase (Modules 1-2) - Semantic HTML, Custom CSS Properties, Dark Mode & CSS Animations showcase.">
+  <title>GramaGlow • Static Phase Showcase (Modules 1-2)</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/accessibility.css">
+
+  <style>
+    /* Static Phase Special Styles demonstrating CSS Custom Properties & Animations */
+    .static-badge {
+      background: var(--terracotta-subtle);
+      color: var(--terracotta);
+      border: 1px solid var(--terracotta);
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .css-props-inspector {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .color-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .animated-pulse-beacon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444;
+      display: inline-block;
+      box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+      animation: beacon-pulse 1.8s infinite;
+    }
+
+    @keyframes beacon-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-strip"></div>
+
+  <!-- Top Utilities Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="emblem-pill">🇮🇳 Government of India | Panchayati Raj</span>
+        <span>•</span>
+        <span>Pipri Gram Panchayat, Mirzapur (U.P.)</span>
+      </div>
+      <div class="top-bar-controls">
+        <button class="control-btn" id="static-theme-toggle" title="Toggle Light/Dark Theme">
+          🌓 Dark Mode
+        </button>
+        <button class="control-btn" id="static-contrast-toggle" title="High Contrast Mode">
+          👁️ High Contrast
+        </button>
+        <div class="font-btn-group">
+          <button class="font-btn" onclick="setFont('small')">A-</button>
+          <button class="font-btn active" onclick="setFont('medium')">A</button>
+          <button class="font-btn" onclick="setFont('large')">A+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container header-inner">
+      <a href="static.html" class="brand-wrapper">
+        <div class="brand-emblem">🏛️</div>
+        <div class="brand-title-group">
+          <h1>GramaGlow Static Showcase</h1>
+          <div class="panchayat-sub">Modules 1–2: HTML5, CSS Custom Properties, Dark Mode & Animations</div>
+        </div>
+      </a>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="index.html" class="btn btn-primary btn-sm">
+          🚀 Open Dynamic Phase (React SPA)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <!-- Section 1: Modules 1-2 Technical Architecture Highlights -->
+      <section style="margin-bottom: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <span class="static-badge">📐 Modules 1–2 Requirement Compliance</span>
+            <h2 style="font-size: 1.8rem; color: var(--primary-green); margin-top: 0.4rem;">
+              Rural Civic Design System & Custom Properties
+            </h2>
+          </div>
+          <button class="btn btn-outline btn-sm" id="toggle-inspector">
+            🔍 Inspect CSS Custom Properties
+          </button>
+        </div>
+
+        <div id="inspector-panel" class="css-props-inspector">
+          <b>/* Active CSS Custom Properties (:root) */</b><br>
+          --primary-green: <span class="color-swatch" style="background:#1E5631;"></span><span id="prop-green">#1E5631</span> (Forest Green / नीम हरा)<br>
+          --terracotta: <span class="color-swatch" style="background:#C85A32;"></span><span id="prop-terra">#C85A32</span> (Rural Clay / पकी मिट्टी)<br>
+          --khaki-gold: <span class="color-swatch" style="background:#C28E46;"></span><span id="prop-gold">#C28E46</span> (Harvest Gold / सुनहरी फसल)<br>
+          --bg-primary: <span class="color-swatch" style="background:var(--bg-primary);"></span><span id="prop-bg">var(--bg-primary)</span><br>
+          --text-primary: <span class="color-swatch" style="background:var(--text-primary);"></span><span id="prop-text">var(--text-primary)</span>
+        </div>
+      </section>
+
+      <!-- Section 2: Village Profile Static Page -->
+      <section style="margin-bottom: 3rem;">
+        <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1rem; border-left: 4px solid var(--terracotta); padding-left: 0.6rem;">
+          1. Village Profile & Leadership Roster (ग्राम पंचायत पिपरी)
+        </h3>
+
+        <div class="grid-2" style="margin-bottom: 1.5rem;">
+          <article class="card">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--terracotta); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                👩‍💼
+              </div>
+              <div>
+                <span class="badge badge-assigned">Elected Sarpanch</span>
+                <h4 style="font-size: 1.25rem;">Smt. Savita Devi (श्रीमती सविता देवी)</h4>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">📞 +91 94520 18321</div>
+              </div>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;">
+              Elected village head committed to 100% solar lighting, clean piped drinking water under Jal Jeevan Mission, and responsive digital grievance redressal.
+            </p>
+          </article>
+
+          <article class="card">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--primary-green); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                👨‍💼
+              </div>
+              <div>
+                <span class="badge badge-progress">Panchayat Secretary (VDO)</span>
+                <h4 style="font-size: 1.25rem;">Shri Rajesh Kumar Sharma</h4>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">📞 +91 98391 44520</div>
+              </div>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;">
+              Block Development Officer liaison responsible for citizen certificates, family register copies, and 15th Finance Commission fund disbursement.
+            </p>
+          </article>
+        </div>
+
+        <div class="grid-4">
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary-green);">3,420</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Population (जनसंख्या)</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: var(--terracotta);">680</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Households (परिवार)</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: var(--khaki-gold);">8 Wards</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Elected Constituencies</div>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 800; color: #0284C7;">78.4%</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">Literacy Rate (साक्षरता)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Village Services Directory -->
+      <section style="margin-bottom: 3rem;">
+        <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1rem; border-left: 4px solid var(--primary-green); padding-left: 0.6rem;">
+          2. Citizen Services Catalog (नागरिक सार्वजनिक सेवाएं)
+        </h3>
+        <div class="grid-3">
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💧</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Drinking Water & Handpumps</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Maintenance of 42 community handpumps, solar RO ATM, and household pipeline tap connections under Jal Jeevan Mission.
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💡</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Solar Streetlighting</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              2 high-mast towers and 38 dusk-to-dawn 40W LED solar pole lights installed across village alleyways.
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧹</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Sanitation & Drainage</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Daily village waste collection, anti-larval mosquito spraying, and covered masonry storm drain maintenance.
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛣️</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Concrete Roads & Pavements</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Construction of CC interlocking roads connecting farm fields and residential wards to the canal bypass.
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌾</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Ration & PDS Monitoring</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Transparent biometric grain distribution tracking for NFSA Antyodaya and Priority Household cardholders.
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏥</div>
+            <h4 style="font-size: 1.1rem; margin-bottom: 0.3rem;">Primary Health & Anganwadi</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              Child immunization sessions, maternal nutrition supplements, and free veterinary vaccination drives.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Village Announcements Section with CSS Animations -->
+      <section style="margin-bottom: 3rem;">
+        <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1rem; border-left: 4px solid var(--khaki-gold); padding-left: 0.6rem;">
+          3. Village Announcements & Meeting Broadcasts (सार्वजनिक सूचना पटल)
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="card" style="border-left: 5px solid #EF4444;">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+              <span class="animated-pulse-beacon"></span>
+              <span class="badge badge-urgent">URGENT GRAM SABHA SUMMONS</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Issue Date: 14 Nov 2026</span>
+            </div>
+            <h4 style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Quarterly Gram Sabha General Assembly - Next Tuesday at 10:00 AM
+            </h4>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;">
+              All adult villagers of Pipri Gram Panchayat are requested to attend the quarterly Gram Sabha meeting at Panchayat Bhavan. Agenda includes 2026-27 Village Development Plan approval, Jal Jeevan Mission social audit, and community priority voting.
+            </p>
+            <div style="margin-top: 0.6rem; font-size: 0.85rem; font-weight: 600; color: var(--terracotta);">
+              📍 Venue: Panchayat Bhavan Hall, Pipri • Authority: Sarpanch & Secretary
+            </div>
+          </div>
+
+          <div class="card" style="border-left: 5px solid var(--primary-green);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+              <span class="badge badge-resolved">HEALTH & VACCINE</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Issue Date: 12 Nov 2026</span>
+            </div>
+            <h4 style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Free Foot & Mouth Disease Cattle Vaccination Camp
+            </h4>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;">
+              Mobile veterinary medical team will visit Wards 1, 2, and 7 on Thursday. Farmers are requested to bring milch animals to ward collection centers between 8 AM and 1 PM.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Transition to Dynamic Phase -->
+      <section class="card" style="text-align: center; background: linear-gradient(135deg, var(--bg-card), var(--primary-green-subtle)); border: 2px dashed var(--primary-green); padding: 2.5rem 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚡</div>
+        <h3 style="font-size: 1.5rem; color: var(--primary-green); margin-bottom: 0.5rem;">
+          Ready to experience the Dynamic Phase (Modules 3–4)?
+        </h3>
+        <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto 1.5rem auto;">
+          Built with React patterns (useState, useEffect, Context, Hash Router), SQLite REST backend, audio notice broadcaster, interactive budget expenditure tracker, citizen grievance filing, and Sarpanch administrative hub.
+        </p>
+        <a href="index.html" class="btn btn-terracotta btn-lg">
+          🚀 Open GramaGlow Dynamic React Portal
+        </a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container" style="text-align: center;">
+      <p>© 2026 Pipri Gram Panchayat. GramaGlow Modules 1–2 Static Phase Showcase.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('static-theme-toggle');
+    themeBtn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☀️ Light Mode' : '🌓 Dark Mode';
+    });
+
+    // Contrast toggle
+    const contrastBtn = document.getElementById('static-contrast-toggle');
+    contrastBtn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-contrast');
+      const next = cur === 'high' ? 'normal' : 'high';
+      document.documentElement.setAttribute('data-contrast', next);
+    });
+
+    // Font size
+    function setFont(size) {
+      document.documentElement.setAttribute('data-font', size);
+      document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    // Toggle inspector
+    const inspector = document.getElementById('inspector-panel');
+    document.getElementById('toggle-inspector').addEventListener('click', () => {
+      inspector.style.display = inspector.style.display === 'none' ? 'block' : 'none';
+    });
+  </script>
+</body>
+</html>

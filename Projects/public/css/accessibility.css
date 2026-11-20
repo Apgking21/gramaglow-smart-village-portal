@@ -1,0 +1,90 @@
+/* ==========================================================================
+   GramaGlow: Accessibility Stylesheet (WCAG AAA & Rural Touch Optimization)
+   ========================================================================== */
+
+/* High Contrast Mode */
+:root[data-contrast="high"] {
+  --bg-primary: #FFFFFF !important;
+  --bg-surface: #FFFFFF !important;
+  --bg-subtle: #EEEEEE !important;
+  --bg-card: #FFFFFF !important;
+  
+  --text-primary: #000000 !important;
+  --text-secondary: #111111 !important;
+  --text-muted: #333333 !important;
+
+  --border-color: #000000 !important;
+  --border-strong: #000000 !important;
+
+  --primary-green: #005A1E !important;
+  --terracotta: #A52A2A !important;
+
+  --status-submitted-bg: #FFE58F !important;
+  --status-submitted-text: #000000 !important;
+  --status-assigned-bg: #ADC6FF !important;
+  --status-assigned-text: #000000 !important;
+  --status-progress-bg: #D3ADF7 !important;
+  --status-progress-text: #000000 !important;
+  --status-resolved-bg: #B7EB8F !important;
+  --status-resolved-text: #000000 !important;
+  --status-escalated-bg: #FFA39E !important;
+  --status-escalated-text: #000000 !important;
+}
+
+:root[data-contrast="high"][data-theme="dark"] {
+  --bg-primary: #000000 !important;
+  --bg-surface: #000000 !important;
+  --bg-subtle: #1A1A1A !important;
+  --bg-card: #0A0A0A !important;
+
+  --text-primary: #FFFFFF !important;
+  --text-secondary: #F0F0F0 !important;
+  --text-muted: #D9D9D9 !important;
+
+  --border-color: #FFFFFF !important;
+  --border-strong: #FFFFFF !important;
+
+  --primary-green: #52C41A !important;
+  --terracotta: #FF7875 !important;
+}
+
+:root[data-contrast="high"] .card,
+:root[data-contrast="high"] .btn,
+:root[data-contrast="high"] .form-control,
+:root[data-contrast="high"] .action-tile {
+  border-width: 2px !important;
+  border-color: currentColor !important;
+}
+
+/* Accessible Touch Targets (At least 48px high for smartphone ease) */
+button, input[type="button"], input[type="submit"], .btn, .nav-link, .category-card-btn {
+  min-height: 44px;
+}
+
+/* Explicit Focus States */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #FF9933 !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Large Print Helper */
+.text-large-touch {
+  font-size: 1.15em;
+}

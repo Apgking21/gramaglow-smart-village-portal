@@ -1,0 +1,21 @@
+{
+  "name": "gramaglow-digital-panchayat",
+  "version": "1.0.0",
+  "description": "GramaGlow: Smart Village Governance & Citizen Services Portal for Pipri Gram Panchayat",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node data/seed.js"
+  },
+  "keywords": [
+    "panchayat",
+    "governance",
+    "smart-village",
+    "grievance-redressal",
+    "budget-transparency",
+    "bilingual",
+    "digital-india"
+  ],
+  "author": "GramaGlow Team",
+  "license": "MIT"
+}
