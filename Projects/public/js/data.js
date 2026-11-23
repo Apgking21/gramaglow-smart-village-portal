@@ -729,6 +729,21 @@ class OfflineStorage {
 
 // Universal API Client with automatic fallbacks
 const ApiClient = {
+  async loginAdmin(password) {
+    const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Sign-in failed.');
+    return json;
+  },
+  async logoutAdmin() {
+    await fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  },
+  async checkAdminSession() {
+    const res = await fetch('/api/auth/me', { cache: 'no-store' });
+    if (!res.ok) return false;
+    const json = await res.json();
+    return Boolean(json.authenticated);
+  },
   baseUrl: (window.location.protocol === 'file:' || !window.location.host) ? '' : window.location.origin,
 
   async fetchVillage() {
@@ -768,8 +783,9 @@ const ApiClient = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(noticeData)
       });
+      if (res.status === 401) throw Object.assign(new Error('Administrator sign-in expired. Please sign in again.'), { status: 401 });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { if (e.status === 401) throw e; }
 
     // Offline fallback
     const notices = OfflineStorage.get('notices', DEFAULT_VILLAGE_DATA.notices);
@@ -801,8 +817,9 @@ const ApiClient = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
       });
+      if (res.status === 401) throw Object.assign(new Error('Administrator sign-in expired. Please sign in again.'), { status: 401 });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { if (e.status === 401) throw e; }
 
     // Offline fallback
     const projects = OfflineStorage.get('projects', DEFAULT_VILLAGE_DATA.projects);
@@ -900,8 +917,9 @@ const ApiClient = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
       });
+      if (res.status === 401) throw Object.assign(new Error('Administrator sign-in expired. Please sign in again.'), { status: 401 });
       if (res.ok) return await res.json();
-    } catch (e) {}
+    } catch (e) { if (e.status === 401) throw e; }
 
     // Offline fallback
     const list = OfflineStorage.get('grievances', DEFAULT_VILLAGE_DATA.grievances);

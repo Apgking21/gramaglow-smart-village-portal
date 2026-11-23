@@ -3,7 +3,7 @@ const { DatabaseSync } = require('node:sqlite');
 const path = require('path');
 const assert = require('assert');
 
-const DB_PATH = path.join(__dirname, 'gramaglow.db');
+const DB_PATH = process.env.GRAMAGLOW_DB_PATH || path.join(__dirname, 'gramaglow.db');
 const db = new DatabaseSync(DB_PATH);
 
 console.log('--- GramaGlow Core Logic & Database Tests ---');

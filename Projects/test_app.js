@@ -7,12 +7,43 @@ async function runTests() {
   console.log('--- GramaGlow Test Suite Starting ---');
 
   // We can require server.js directly or start an instance
+  process.env.GRAMAGLOW_ADMIN_PASSWORD = 'test-only-gramaglow-password';
   const serverModule = require('./server.js');
   // Wait 500ms for server to bind
   await new Promise(r => setTimeout(r, 600));
 
   const PORT = process.env.PORT || 3000;
   const baseUrl = `http://localhost:${PORT}`;
+  let sessionCookie = '';
+  const healthRes = await fetch(`${baseUrl}/api/health`);
+  const health = await healthRes.json();
+  if (!healthRes.ok || health.status !== 'healthy') throw new Error('Health endpoint did not report a healthy service');
+  console.log('✓ Health endpoint and database readiness verified');
+  const specRes = await fetch(`${baseUrl}/api/docs/openapi.json`);
+  const spec = await specRes.json();
+  if (!specRes.ok || spec.openapi !== '3.1.0' || !spec.paths['/api/grievances']) throw new Error('OpenAPI contract is missing or invalid');
+  console.log('✓ OpenAPI 3.1 documentation endpoint verified');
+
+  const loginRes = await fetch(`${baseUrl}/api/auth/login`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'admin', password: 'test-only-gramaglow-password' })
+  });
+  if (!loginRes.ok) throw new Error(`Admin login failed: ${loginRes.status}`);
+  sessionCookie = loginRes.headers.get('set-cookie').split(';')[0];
+  const deniedRes = await fetch(`${baseUrl}/api/projects/1`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ completion_pct: 1 }) });
+  if (deniedRes.status !== 401) throw new Error('Protected project API accepted an unauthenticated write');
+  console.log('✓ Session authentication and protected admin API verified');
+  const wrongLogin = await fetch(`${baseUrl}/api/auth/login`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: 'definitely-wrong-password' })
+  });
+  if (wrongLogin.status !== 401) throw new Error('Invalid admin password was not rejected');
+  const invalidBudget = await fetch(`${baseUrl}/api/projects/1`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json', Cookie: sessionCookie },
+    body: JSON.stringify({ spent_amount: 999999999 })
+  });
+  if (invalidBudget.status !== 400) throw new Error('Out-of-range project expenditure was not rejected');
+
 
   async function apiGet(endpoint) {
     const res = await fetch(`${baseUrl}${endpoint}`);
@@ -33,7 +64,7 @@ async function runTests() {
   async function apiPut(endpoint, data) {
     const res = await fetch(`${baseUrl}${endpoint}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(sessionCookie ? { Cookie: sessionCookie } : {}) },
       body: JSON.stringify(data)
     });
     if (!res.ok) throw new Error(`PUT ${endpoint} failed: ${res.status}`);
@@ -97,6 +128,10 @@ async function runTests() {
     resolution_remarks: 'Plumber dispatched with spare gasket.'
   });
   console.log(`✓ Status Updated: ${assignRes.grievance.status}, Assigned to: ${assignRes.grievance.assigned_to_name}`);
+  const auditRes = await fetch(`${baseUrl}/api/admin/audit?limit=10`, { headers: { Cookie: sessionCookie } });
+  const audit = await auditRes.json();
+  if (!auditRes.ok || !audit.events.some(event => event.entity_key === newComplaint.token && event.action === 'status_updated') || !audit.events.some(event => event.entity_key === newComplaint.token && event.action === 'created')) throw new Error('Grievance audit trail is incomplete');
+  console.log('✓ Transactional grievance audit trail verified');
 
   // Test 8: Gram Sabha Agenda Voting
   console.log('Test 8: Testing Community Agenda Voting...');

@@ -29,10 +29,10 @@ The project is structured in two cohesive phases complying with curriculum Modul
 - **CSS Animations:** `@keyframes pulse-glow`, `@keyframes sound-wave`, `@keyframes beacon-pulse`, card lift transitions.
 - **Static Pages:** Village demographic overview, citizen services directory, and official notices broadcast.
 
-### 2. Dynamic Phase (React Patterns & Node.js/SQLite — Modules 3–4)
+### 2. Dynamic Phase (JavaScript SPA & Node.js/SQLite — Modules 3–4)
 - **Main Application:** [`public/index.html`](file:///c:/Users/ameen/OneDrive/Desktop/Projects/public/index.html)
-- **Client Runtime:** [`public/js/app.js`](file:///c:/Users/ameen/OneDrive/Desktop/Projects/public/js/app.js) with `useState`, `useEffect`, `Context`, and dynamic client-side `Router`.
-- **Backend Server:** [`server.js`](file:///c:/Users/ameen/OneDrive/Desktop/Projects/server.js) — Native Node.js REST API with zero external dependencies.
+- **Client Runtime:** `public/js/app.js` uses a custom reactive state store, shared application state (Context-style), event-driven rendering and a hash-based client-side router. The current frontend is vanilla JavaScript, not React or actual React hooks.
+- **Backend Server:** `server.js` — Native Node.js REST API, with authentication service/repository modules, structured JSON logging and a global request error boundary.
 - **Database:** SQLite (`node:sqlite` in [`gramaglow.db`](file:///c:/Users/ameen/OneDrive/Desktop/Projects/gramaglow.db)) seeded with Pipri Gram Panchayat data.
 - **Offline / Standalone Resilience:** [`public/js/data.js`](file:///c:/Users/ameen/OneDrive/Desktop/Projects/public/js/data.js) provides automatic LocalStorage fallback if opened as a standalone static file.
 
@@ -80,7 +80,7 @@ To prevent citizen complaints from languishing unresolved, GramaGlow implements 
 ## 💻 Quick Start & Running the Project
 
 ### Prerequisites
-- **Node.js** (v18 or higher recommended; v24 verified)
+- **Node.js 22.5 or newer** (required for the built-in `node:sqlite` API)
 
 ### 1. Initialize SQLite Database
 ```bash
@@ -88,19 +88,35 @@ node data/seed.js
 ```
 *Creates `gramaglow.db` with complete seed data for Pipri Gram Panchayat.*
 
-### 2. Start the Server
+### 2. Configure administrator sign-in
+
+Set these environment variables before starting the server. The default username is `admin`; choose a long, unique password. Passwords are stored as salted `scrypt` hashes in SQLite.
+
+PowerShell:
+```powershell
+$env:GRAMAGLOW_ADMIN_USERNAME="admin"
+$env:GRAMAGLOW_ADMIN_PASSWORD="your-long-unique-password"
+```
+
+macOS/Linux:
 ```bash
-node server.js
+export GRAMAGLOW_ADMIN_USERNAME="admin"
+export GRAMAGLOW_ADMIN_PASSWORD="your-long-unique-password"
+```
+
+### 3. Start the Server
+```bash
+npm start
 ```
 The server will start on port `3000`:
-- **Main React Application (Dynamic Phase):** [http://localhost:3000](http://localhost:3000)
+- **Main Dynamic Portal:** [http://localhost:3000](http://localhost:3000)
 - **Static Phase Showcase (Modules 1–2):** [http://localhost:3000/static.html](http://localhost:3000/static.html)
 
-### 3. Run Self-Checking Test Suite
+### 4. Run Self-Checking Test Suite
 ```bash
-node test_logic.js
+npm test
 ```
-*Validates database schema, project budget calculations, state machine transitions, and SLA escalation heuristics.*
+*Runs database/business-logic checks, salted-password authentication tests, health endpoint checks and HTTP integration tests.*
 
 ---
 
@@ -135,16 +151,74 @@ c:\Users\ameen\OneDrive\Desktop\Projects\
 ├── data/
 │   └── seed.js             # Database seeding script for Pipri Gram Panchayat
 └── public/
-    ├── index.html          # Main Dynamic React Application Shell
+    ├── index.html          # Main dynamic application shell
     ├── static.html         # Modules 1–2 Static Phase Showcase
     ├── css/
     │   ├── style.css       # Rural Civic Design System, custom properties, animations
     │   └── accessibility.css # High contrast (WCAG AAA) & 48px touch targets
     └── js/
-        ├── app.js          # React SPA: Router, Context, State, Components
+        ├── app.js          # Reactive JavaScript SPA: state store, hash router, view renderers
         ├── data.js         # API client & offline LocalStorage fallback store
         └── translations.js # Bilingual Hindi & English dictionary
 ```
 
 ---
 *Built with ❤️ for rural empowerment and digital panchayat governance under the Digital India initiative.*
+
+
+---
+
+## GramaGlow 1.1 — Improvement Notes
+
+This revision preserves the existing Pipri Gram Panchayat portal and adds hardening based on the Attempt #1 evaluation report.
+
+### What changed
+- **Real server-verified admin sign-in:** the role toggle now asks for the administrator password; the server issues an HttpOnly, SameSite=Strict session cookie. A saved browser role flag alone can no longer authorize administration.
+- **Protected admin operations:** notice publishing, project updates, and grievance status changes require a valid server session.
+- **Login resilience:** five failed attempts from one client address trigger a 15-minute cooldown.
+- **Server-side validation:** JSON bodies, citizen details, grievance categories/statuses, project spending and completion percentages are validated before database writes. Text inputs are length-limited and control characters are removed.
+- **Safer defaults:** removed permissive wildcard CORS, added same-origin write checks, request-size limits and browser security headers.
+- **Data access improvements:** added indexes for common grievance, notice and project lookups, plus limit/offset pagination for the grievance board API.
+- **Operational visibility:** server-side failures are logged while API clients receive a generic error instead of internal exception text.
+- **Developer workflow:** added npm test scripts and a sample environment file.
+
+### Run locally
+Prerequisite: Node.js 22.5+ (the project uses the built-in `node:sqlite` module).
+
+```bash
+# 1. Install/configure the admin password (PowerShell)
+$env:GRAMAGLOW_ADMIN_PASSWORD = "choose-a-long-unique-password"
+
+# macOS / Linux
+export GRAMAGLOW_ADMIN_PASSWORD="choose-a-long-unique-password"
+
+# 2. Start the application
+npm start
+```
+
+Open:
+- Dynamic portal: http://localhost:3000
+- Static Modules 1–2 showcase: http://localhost:3000/static.html
+
+The existing SQLite database is included. To recreate it from the seed data, stop the server and run `npm run seed`.
+
+### Test
+```bash
+npm test
+```
+
+The API test uses a temporary test password set inside the test process. It verifies that an unauthenticated administrator write is rejected and then exercises the existing portal endpoints.
+
+### Important deployment notes
+- Admin sign-in is disabled until `GRAMAGLOW_ADMIN_PASSWORD` is configured. Do not put this value in frontend code, source control, or a public `.env` file.
+- This is a single-admin password gate, not a multi-user identity system. For production deployment, use HTTPS, a managed identity provider or individually salted password hashes, persistent/revocable sessions, CSRF tokens, audit logging, database backups and a proper secret manager.
+- Sessions are held in server memory and expire after eight hours; restarting the server signs everyone out.
+- Public citizen submission and community voting remain public by design. Apply rate limiting and abuse monitoring before exposing the portal to the public internet.
+- The project retains its existing vanilla JavaScript reactive SPA architecture. The evaluator's React recommendation is an architectural next step, not a claim that this revision has migrated the UI to React.
+
+
+## GramaGlow 1.3 update
+
+The Attempt #5 evaluation report awarded 88/100 (A) and recommended a React component architecture, stronger service/repository separation, database transactions and formal API documentation. Version 1.3 adds a React + React Router migration track in `frontend-react/`, extracts grievance domain logic into service/repository modules, wraps grievance writes and audit events in SQLite transactions, adds a protected audit feed, and publishes an OpenAPI 3.1 contract at `/api/docs/openapi.json`.
+
+The original full-featured portal remains available at `/` during the staged React migration. To run the React version, start the API with `npm start`, then in another terminal run `npm run react:install` followed by `npm run react:dev`. For a production bundle use `npm run react:build` and open `/react`. See `IMPROVEMENTS.md` for details and current migration scope.

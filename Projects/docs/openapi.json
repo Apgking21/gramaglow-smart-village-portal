@@ -1,0 +1,23 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "GramaGlow Civic Services API", "version": "1.3.0", "description": "REST API for village information, notices, development projects, schemes and citizen grievance redressal." },
+  "servers": [{ "url": "http://localhost:3000", "description": "Local development" }],
+  "tags": [{"name":"Village"},{"name":"Notices"},{"name":"Grievances"},{"name":"Schemes"},{"name":"Administration"}],
+  "paths": {
+    "/api/health": { "get": { "tags":["Administration"], "summary":"Service health check", "responses":{"200":{"description":"Service health and database readiness"}} } },
+    "/api/village": { "get": { "tags":["Village"], "summary":"Get village profile and ward representatives", "responses":{"200":{"description":"Village profile and ward list"}} } },
+    "/api/notices": { "get": { "tags":["Notices"], "summary":"List notices", "parameters":[{"name":"category","in":"query","schema":{"type":"string"}}], "responses":{"200":{"description":"Notice collection"}} }, "post": { "tags":["Notices"], "summary":"Publish an official notice (admin)", "security":[{"sessionCookie":[]}], "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/NoticeInput"}}}}, "responses":{"201":{"description":"Notice created"},"401":{"description":"Administrator sign-in required"},"400":{"description":"Invalid input"}} } },
+    "/api/grievances": { "get": { "tags":["Grievances"], "summary":"List and filter public grievance tickets", "responses":{"200":{"description":"Paginated grievance list"}} }, "post": { "tags":["Grievances"], "summary":"Submit a citizen grievance", "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/GrievanceInput"}}}}, "responses":{"201":{"description":"Ticket created; response includes tracking token"},"400":{"description":"Invalid citizen or grievance data"}} } },
+    "/api/grievances/{token}": { "get": { "tags":["Grievances"], "summary":"Track a grievance by ticket token", "parameters":[{"name":"token","in":"path","required":true,"schema":{"type":"string"}}], "responses":{"200":{"description":"Grievance details"},"404":{"description":"Ticket not found"}} } },
+    "/api/grievances/{token}/status": { "put": { "tags":["Grievances"], "summary":"Update grievance assignment or status (admin)", "security":[{"sessionCookie":[]}], "parameters":[{"name":"token","in":"path","required":true,"schema":{"type":"string"}}], "requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"status":{"type":"string","enum":["Submitted","Assigned","In Progress","Resolved"]},"assigned_ward_member_id":{"type":"integer","minimum":1,"maximum":8},"resolution_remarks":{"type":"string","maxLength":1000}}}}}}, "responses":{"200":{"description":"Ticket updated and audit event recorded"},"401":{"description":"Administrator sign-in required"},"404":{"description":"Ticket not found"}} } },
+    "/api/schemes": { "get": { "tags":["Schemes"], "summary":"List welfare schemes", "responses":{"200":{"description":"Scheme collection"}} } },
+    "/api/admin/audit": { "get": { "tags":["Administration"], "summary":"Read recent change audit events (admin)", "security":[{"sessionCookie":[]}], "responses":{"200":{"description":"Audit event collection"},"401":{"description":"Administrator sign-in required"}} } }
+  },
+  "components": {
+    "securitySchemes":{"sessionCookie":{"type":"apiKey","in":"cookie","name":"gramaglow_session"}},
+    "schemas": {
+      "NoticeInput":{"type":"object","required":["title_en","content_en"],"properties":{"title_en":{"type":"string","maxLength":160},"title_hi":{"type":"string","maxLength":160},"content_en":{"type":"string","maxLength":5000},"content_hi":{"type":"string","maxLength":5000},"category":{"type":"string","enum":["general","meeting","health","education","development","alert"]},"priority":{"type":"string","enum":["normal","urgent","high"]}}},
+      "GrievanceInput":{"type":"object","required":["citizen_name","phone","ward_number","category","landmark","description"],"properties":{"citizen_name":{"type":"string","maxLength":100},"phone":{"type":"string","pattern":"^\\+?[0-9\\s-]{10,15}$"},"ward_number":{"type":"integer","minimum":1,"maximum":8},"category":{"type":"string","enum":["water","streetlights","health","sanitation","ration","roads"]},"landmark":{"type":"string","maxLength":160},"description":{"type":"string","maxLength":2000},"urgency":{"type":"string","enum":["Low","Normal","High","Critical"]}}}
+    }
+  }
+}

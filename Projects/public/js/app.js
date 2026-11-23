@@ -1883,23 +1883,33 @@
     const roleCitizenBtn = document.getElementById('role-citizen-btn');
     const roleAdminBtn = document.getElementById('role-admin-btn');
     if (roleCitizenBtn) {
-      roleCitizenBtn.addEventListener('click', () => {
+      roleCitizenBtn.addEventListener('click', async () => {
+        if (AppState.role === 'admin') { try { await ApiClient.logoutAdmin(); } catch (_) {} }
         localStorage.setItem('gramaglow_role', 'citizen');
         AppState.setState({ role: 'citizen' });
         if (AppState.currentRoute === 'admin') navigateTo('home');
       });
     }
     if (roleAdminBtn) {
-      roleAdminBtn.addEventListener('click', () => {
-        localStorage.setItem('gramaglow_role', 'admin');
-        AppState.setState({ role: 'admin' });
-        navigateTo('admin');
+      roleAdminBtn.addEventListener('click', async () => {
+        if (AppState.role === 'admin') { navigateTo('admin'); return; }
+        const password = window.prompt('Administrator password:');
+        if (!password) return;
+        try {
+          await ApiClient.loginAdmin(password);
+          localStorage.setItem('gramaglow_role', 'admin');
+          AppState.setState({ role: 'admin' });
+          navigateTo('admin');
+        } catch (error) {
+          alert(error.message || 'Administrator sign-in failed.');
+        }
       });
     }
 
     const switchBackCitizen = document.getElementById('switch-back-citizen-btn');
     if (switchBackCitizen) {
-      switchBackCitizen.addEventListener('click', () => {
+      switchBackCitizen.addEventListener('click', async () => {
+        try { await ApiClient.logoutAdmin(); } catch (_) {}
         localStorage.setItem('gramaglow_role', 'citizen');
         AppState.setState({ role: 'citizen' });
         navigateTo('home');
@@ -2228,6 +2238,17 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     syncDomSettings();
+    try {
+      const authenticated = await ApiClient.checkAdminSession();
+      if (!authenticated && AppState.role === 'admin') {
+        localStorage.setItem('gramaglow_role', 'citizen');
+        AppState.role = 'citizen';
+        if (AppState.currentRoute === 'admin') AppState.currentRoute = 'home';
+      }
+    } catch (_) {
+      localStorage.setItem('gramaglow_role', 'citizen');
+      AppState.role = 'citizen';
+    }
     render();
     await loadInitialData();
   });
